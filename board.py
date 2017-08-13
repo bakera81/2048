@@ -1,14 +1,18 @@
 import random
 import numpy as np
+import copy
 
 class Board(object):
 
-    def __init__(self):
-        board = np.array([[0,0,0,0],
-                          [0,0,0,0],
-                          [0,0,0,0],
-                          [0,0,0,0]])
-        self.board = board
+    # TODO: Implement deep copy (new object)
+    def __init__(self, board=None):
+        if board is None:
+            self.board = np.array([[0,0,0,0],
+                                   [0,0,0,0],
+                                   [0,0,0,0],
+                                   [0,0,0,0]])
+        else:
+            self.board = copy.copy(board.board)
 
 
     def zeros(self):
@@ -94,11 +98,15 @@ class Board(object):
         self.board[:,2] = self.inverse_shift(self.board[:,2])
         self.board[:,3] = self.inverse_shift(self.board[:,3])
 
+
+    def equals(self, other):
+        return np.array_equal(self.board, other.board)
+
 # TODO: create property for board
     # @property
     # def board(self):
     #     return self.board
-    
+
     # def getboard(self):
     #     return self.board
     # def setboard(self, value):
