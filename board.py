@@ -166,7 +166,13 @@ class Board(object):
         else:
             return False
 
-
+    def can_add_to_row(self, y):
+        test_board = Board(self)
+        test_board.down()
+        if sum(test_board.board[y]) > sum(self.board[y]):
+            return True
+        else:
+            return False
 
 # TODO: create property for board
     # @property

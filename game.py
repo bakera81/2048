@@ -91,11 +91,14 @@ class Game(object):
         elif self.board.can_combine('r', x, y):
             self.board.right()
             return True
+        elif self.board.can_add_to_row(y):
+            self.board.down()
+            return True
         elif self.board.can_combine('l', x, y):
-            self.board.right()
+            self.board.left()
             return True
         elif self.board.can_combine('u', x, y):
-            self.board.right()
+            self.board.up()
             return True
         else:
             return False
