@@ -4,6 +4,7 @@ import copy
 
 class Board(object):
 
+# TODO: create a Number class. Then you can tell if a number changed, and where the number came from.
     def __init__(self, board=None):
         if board is None:
             self.board = np.array([[0,0,0,0],
@@ -136,8 +137,9 @@ class Board(object):
         """
         return np.array_equal(self.board, other.board)
 
+
     # TODO: Just look at the row/col and compute. No need to create a new board.
-    def can_combine(self, direction, x, y):
+    def can_combine(self, x, y, direction):
         """
             @param direction the direction to test combining. Possible values are 'up', 'down', 'left', 'right'.
             @param x the x coordinate of the location to test. The origin is top left.
@@ -146,7 +148,6 @@ class Board(object):
         """
         original_val = self.board[y, x]
         test_board = Board(self)
-
         if direction == 'down' or direction == 'd':
             test_board.down()
         elif direction == 'right' or direction == 'r':
@@ -166,6 +167,76 @@ class Board(object):
         else:
             return False
 
+
+    def move_towards(self, x, y):
+        if self.can_combine(x, y, 'down'):
+            self.down()
+            return True
+        elif self.can_combine(x, y, 'right'):
+            self.right()
+            return True
+        elif self.can_combine(x, y, 'left'):
+            self.left()
+            return True
+        elif self.can_combine(x, y, 'up'):
+            self.up()
+            return True
+        else:
+            return False
+
+
+    def attempt_to_collapse_row(self, y, direction):
+        test_board = Board(self)
+        if direction == 'right':
+            test_board.right()
+        elif direction == 'left':
+            test_board.left()
+        else:
+            print('Error: invalid direction')
+
+        if np.array_equal(self.board[y], test_board.board[y]):
+            return False
+        else:
+            if direction == 'right':
+                self.right()
+            elif direction == 'left':
+                self.left()
+            else:
+                print('Error: invalid direction')
+            return True
+
+
+    def move_towards_row(self, y):
+        test_board = Board(self)
+        test_board.down()
+
+        # There is a case where the board has changed but the row is the same
+        if not np.array_equal(self.board[y], test_board.board[y]):
+            self.down()
+            return True
+        else:
+            return False
+
+
+    def move_towards_col(self, x, direction):
+        test_board = Board(self)
+        if direction == 'right':
+            test_board.right()
+            if not np.array_equal(self.board[:, x], test_board.board[:, x]):
+                self.right()
+                return True
+            else:
+                return False
+        elif direction == 'left':
+            test_board.left()
+            if not np.array_equal(self.board[:, x], test_board.board[:, x]):
+                self.left()
+                return True
+            else:
+                return False
+        else:
+            print('Invalid direction.')
+
     def can_add_to_row(self, y):
         test_board = Board(self)
         test_board.down()
@@ -174,6 +245,12 @@ class Board(object):
         else:
             return False
 
+
+    def equivalent_board():
+        """
+            Returns the equivalent board with the smallest numbers possible. Useful for training an ML algorithm.
+        """
+        pass
 # TODO: create property for board
     # @property
     # def board(self):

@@ -129,6 +129,29 @@ class Game(object):
                 break
 
 
+    def solve_2(self):
+        x, y = (3, 3)
+        direction = ""
+        while True:
+            if self.board.move_towards(x, y):
+                pass
+            elif self.board.attempt_to_collapse_row(y, direction):
+                pass
+            elif self.board.move_towards_row(y):
+                pass
+            elif self.board.move_towards_col(x, direction):
+                pass
+            else:
+                if direction == 'right':
+                    self.board.left()
+                    self.board.right()
+                else:
+                    self.board.right()
+                    self.baord.left()
+
+            # When to increment x, y?
+
+
 
     def show_sequence(self):
         for turn in self.sequence:
