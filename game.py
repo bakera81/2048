@@ -1,14 +1,20 @@
 from board import Board
+import numpy as np
+import copy
 
 class Game(object):
 
-    def __init__(self):
+    def __init__(self, board=None):
         """
             Initializes the board with two numbers.
         """
-        self.board = Board()
-        self.board.next()
-        self.board.next()
+        if board is not None:
+            self.board = copy.copy(board)
+        else:
+            self.board = Board()
+            self.board.next()
+            self.board.next()
+
         self.previous_board = None
         self.sequence = [{'move': None, 'board': Board(self.board)}]
 
@@ -128,29 +134,151 @@ class Game(object):
                 print('Ending.')
                 break
 
+# TODO:
+# left
+# +---------------+
+# | 0 | 0 | 0 | 0 |
+# | 0 | 0 | 0 | 0 |
+# | 0 | 2 | 0 | 4 |
+# | 2 | 4 | 2 | 16 |
+# +---------------+
+
+# left
+# +---------------+
+# | 0 | 0 | 2 | 4 |
+# | 0 | 4 | 2 | 8 |
+# | 4 | 8 | 2 | 4 |
+# | 8 | 16 | 4 | 64 |
+# +---------------+
 
     def solve_2(self):
         x, y = (3, 3)
-        direction = ""
-        while True:
-            if self.board.move_towards(x, y):
+        direction = 'right'
+        for _ in range(100):
+            if self.move_towards(x, y):
                 pass
-            elif self.board.attempt_to_collapse_row(y, direction):
+            elif self.attempt_to_collapse_row(y, direction):
                 pass
-            elif self.board.move_towards_row(y):
+            elif self.attempt_to_collapse_col(x):
                 pass
-            elif self.board.move_towards_col(x, direction):
+            elif self.move_towards_row(y):
+                pass
+            elif self.move_towards_col(x, direction):
                 pass
             else:
                 if direction == 'right':
-                    self.board.left()
-                    self.board.right()
+                    self.left()
+                    self.right()
                 else:
-                    self.board.right()
-                    self.baord.left()
+                    self.right()
+                    self.left()
 
             # When to increment x, y?
 
+
+    def right(self):
+        self.sequence.append({'move': 'right', 'board': Board(self.board)})
+        self.board.right()
+        self.board.next()
+
+
+    def down(self):
+        self.sequence.append({'move': 'down', 'board': Board(self.board)})
+        self.board.down()
+        self.board.next()
+
+
+    def left(self):
+        self.sequence.append({'move': 'left', 'board': Board(self.board)})
+        self.board.left()
+        self.board.next()
+
+
+    def up(self):
+        self.sequence.append({'move': 'up', 'board': Board(self.board)})
+        self.board.up()
+        self.board.next()
+
+
+    def move_towards(self, x, y):
+        if self.board.can_combine(x, y, 'down'):
+            self.down()
+            return True
+        elif self.board.can_combine(x, y, 'right'):
+            self.right()
+            return True
+        elif self.board.can_combine(x, y, 'left'):
+            self.left()
+            return True
+        elif self.board.can_combine(x, y, 'up'):
+            self.up()
+            return True
+        else:
+            return False
+
+
+    def attempt_to_collapse_row(self, y, direction):
+        test_board = Board(self.board)
+        if direction == 'right':
+            test_board.right()
+        elif direction == 'left':
+            test_board.left()
+        else:
+            print('Error: invalid direction')
+
+        if np.array_equal(self.board.board[y], test_board.board[y]):
+            return False
+        else:
+            if direction == 'right':
+                self.right()
+            elif direction == 'left':
+                self.left()
+            else:
+                print('Error: invalid direction')
+            return True
+
+
+    def attempt_to_collapse_col(self, x):
+        test_board = Board(self.board)
+        test_board.down()
+
+        if np.array_equal(self.board.board[:, x], test_board.board[:, x]):
+            return False
+        else:
+            self.down()
+            return True
+
+
+    def move_towards_row(self, y):
+        test_board = Board(self.board)
+        test_board.down()
+
+        # There is a case where the board has changed but the row is the same
+        if not np.array_equal(self.board.board[y], test_board.board[y]):
+            self.down()
+            return True
+        else:
+            return False
+
+
+    def move_towards_col(self, x, direction):
+        test_board = Board(self.board)
+        if direction == 'right':
+            test_board.right()
+            if not np.array_equal(self.board.board[:, x], test_board.board[:, x]):
+                self.right()
+                return True
+            else:
+                return False
+        elif direction == 'left':
+            test_board.left()
+            if not np.array_equal(self.board.board[:, x], test_board.board[:, x]):
+                self.left()
+                return True
+            else:
+                return False
+        else:
+            print('Invalid direction.')
 
 
     def show_sequence(self):
