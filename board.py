@@ -1,6 +1,7 @@
 import random
 import numpy as np
 import copy
+from curses import wrapper
 
 class Board(object):
 
@@ -55,6 +56,26 @@ class Board(object):
             output += '| {0} | {1} | {2} | {3} |\n'.format(*row)
         output += '+---------------+\n'
         print(output)
+
+
+
+    # NOTE: to call this, use wrapper(show_curses)
+    def show_curses(self):
+        stdscr = curses.initscr() # Create a new screen
+        curses.noecho() # Don't echo keypresses
+        curses.cbreak() # Don't require enter to be pressed
+        stdscr.keypad(True) # Handle escape sequences for special keys
+
+        # ACS_ULCORNER # Constant for a corner
+        while True:
+            c = stdscr.getch()
+            if c == ord('w'):
+                print(1)
+            elif c == curses.KEY_LEFT:
+                print(2)
+            else:
+                print(0)
+
 
     # TODO: Use numpy to do all rows at once
     def shift(self, row):

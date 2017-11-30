@@ -111,13 +111,6 @@ class Game(object):
 
 
 
-    # NOTE: The board below will be shifted to the left
-    # +---------------+
-    # | 0 | 0 | 0 | 0 |
-    # | 0 | 0 | 0 | 4 |
-    # | 0 | 0 | 0 | 4 |
-    # | 0 | 0 | 0 | 2 |
-    # +---------------+
     def solve(self):
         x = 3 # start solving at the bottom right
         y = 3
@@ -151,27 +144,38 @@ class Game(object):
 # | 8 | 16 | 4 | 64 |
 # +---------------+
 
+# down
+# +---------------+
+# | 0 | 0 | 0 | 0 |
+# | 0 | 0 | 0 | 0 |
+# | 4 | 4 | 0 | 4 |
+# | 4 | 2 | 4 | 16 |
+# +---------------+
+
     def solve_2(self):
         x, y = (3, 3)
         direction = 'right'
-        for _ in range(100):
+        # for _ in range(100):
+        while True:
             if self.move_towards(x, y):
-                pass
+                x, y = (3, 3)
             elif self.attempt_to_collapse_row(y, direction):
-                pass
+                x, y = (3, 3)
             elif self.attempt_to_collapse_col(x):
-                pass
+                x, y = (3, 3)
             elif self.move_towards_row(y):
-                pass
+                x, y = (3, 3)
             elif self.move_towards_col(x, direction):
-                pass
+                x, y = (3, 3)
             else:
-                if direction == 'right':
-                    self.left()
-                    self.right()
-                else:
-                    self.right()
-                    self.left()
+                x, y = self.increment_position(x, y)
+            # else:
+            #     if direction == 'right':
+            #         self.left()
+            #         self.right()
+            #     else:
+            #         self.right()
+            #         self.left()
 
             # When to increment x, y?
 
