@@ -2,10 +2,10 @@ import gym
 from gym import error, spaces, utils
 from gym.utils import seeding
 
-class Twenty48SmallEnv(gym.Env)
+class Twenty48SmallEnv(gym.Env):
 
     metadata = {'render.modes': ['human']}
-    
+
     def __init__(self):
         pass
     def _step(self, action):
