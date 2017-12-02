@@ -182,26 +182,57 @@ class Game(object):
 
     def right(self):
         self.sequence.append({'move': 'right', 'board': Board(self.board)})
+
+        if self.board.can_combine_in_direction('right'):
+            combined = 1.0
+        else:
+            combined = 0.0
+
         self.board.right()
         self.board.next()
+
+        return combined
 
 
     def down(self):
         self.sequence.append({'move': 'down', 'board': Board(self.board)})
+
+        if self.board.can_combine_in_direction('down'):
+            combined = 1.0
+        else:
+            combined = 0.0
+
         self.board.down()
         self.board.next()
+
+        return combined
 
 
     def left(self):
         self.sequence.append({'move': 'left', 'board': Board(self.board)})
+        if self.board.can_combine_in_direction('left'):
+            combined = 1.0
+        else:
+            combined = 0.0
+
         self.board.left()
         self.board.next()
+
+        return combined
 
 
     def up(self):
         self.sequence.append({'move': 'up', 'board': Board(self.board)})
+
+        if self.board.can_combine_in_direction('up'):
+            combined = 1.0
+        else:
+            combined = 0.0
+
         self.board.up()
         self.board.next()
+
+        return combined
 
 
     def move_towards(self, x, y):
@@ -290,3 +321,7 @@ class Game(object):
             print('#######################')
             print(turn['move'])
             turn['board'].show()
+
+
+    def is_over():
+        pass

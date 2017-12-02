@@ -1,7 +1,10 @@
 import random
 import numpy as np
 import copy
-from curses import wrapper
+
+class GameOver(Exception):
+    """GAME OVER"""
+    pass
 
 class Board(object):
 
@@ -27,7 +30,7 @@ class Board(object):
                     output.append((x, y))
         if len(output) == 0:
             print('GAME OVER')
-            raise
+            raise GameOver
         return output
 
 
@@ -56,25 +59,6 @@ class Board(object):
             output += '| {0} | {1} | {2} | {3} |\n'.format(*row)
         output += '+---------------+\n'
         print(output)
-
-
-
-    # NOTE: to call this, use wrapper(show_curses)
-    def show_curses(self):
-        stdscr = curses.initscr() # Create a new screen
-        curses.noecho() # Don't echo keypresses
-        curses.cbreak() # Don't require enter to be pressed
-        stdscr.keypad(True) # Handle escape sequences for special keys
-
-        # ACS_ULCORNER # Constant for a corner
-        while True:
-            c = stdscr.getch()
-            if c == ord('w'):
-                print(1)
-            elif c == curses.KEY_LEFT:
-                print(2)
-            else:
-                print(0)
 
 
     # TODO: Use numpy to do all rows at once
@@ -158,6 +142,26 @@ class Board(object):
         """
         return np.array_equal(self.board, other.board)
 
+
+    def can_combine_in_direction(self, direction):
+        test_board = Board(self)
+        if direction == 'down' or direction == 'd':
+            test_board.down()
+        elif direction == 'right' or direction == 'r':
+            test_board.right()
+        elif direction == 'left' or direction == 'l':
+            test_board.left()
+        elif direction == 'up' or direction == 'u':
+            test_board.up()
+        else:
+            print("Error: invalid string for direction.")
+            raise
+        test_board_mean = np.mean(test_board.board[np.nonzero(test_board.board)])
+        self_mean = np.mean(self.board[np.nonzero(self.board)])
+        if test_board_mean > self_mean:
+            return True
+        else:
+            return False
 
     # TODO: Just look at the row/col and compute. No need to create a new board.
     def can_combine(self, x, y, direction):
