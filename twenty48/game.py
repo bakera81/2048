@@ -1,4 +1,4 @@
-from board import Board
+from .board import Board, GameOver
 import numpy as np
 import copy
 
@@ -21,7 +21,7 @@ class Game(object):
 
     def play(self):
         while True:
-            self.board.show()
+            print(self.board)
             self.previous_board = Board(self.board)
             resp = input("Next Command: ")
             if resp == 'q' or resp == 'Q':
@@ -43,10 +43,14 @@ class Game(object):
                 self.show_sequence()
             else:
                 print("Unrecognized command '{0}'. 'q' to quit.".format(resp))
+
             if not self.board.equals(self.previous_board): # Don't add new numbers if no move was made
-                self.board.next()
+                try:
+                    self.board.next()
+                except GameOver:
+                    break
 
-
+    # Don't add new numbers if no move was made!
     def right(self):
         self.sequence.append({'move': 'right', 'board': Board(self.board)})
 
@@ -106,7 +110,7 @@ class Game(object):
         for turn in self.sequence:
             print('#######################')
             print(turn['move'])
-            turn['board'].show()
+            print(turn['board'])
 
 
     def is_over():
