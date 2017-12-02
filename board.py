@@ -8,7 +8,6 @@ class GameOver(Exception):
 
 class Board(object):
 
-# TODO: create a Number class. Then you can tell if a number changed, and where the number came from.
     def __init__(self, board=None):
         if board is None:
             self.board = np.array([[0,0,0,0],
@@ -17,6 +16,25 @@ class Board(object):
                                    [0,0,0,0]])
         else:
             self.board = copy.copy(board.board)
+
+
+    # TODO: handle mutlidigit numbers better
+    # TODO: use curses for better terminal printing (?)
+    def __str__(self):
+        """
+            Prints the board to the console.
+        """
+        # +---------------+
+        # | x | x | x | x |
+        # | x | x | x | x |
+        # | x | x | x | x |
+        # | x | x | x | x |
+        # +---------------+
+        output = '+---------------+\n'
+        for row in self.board:
+            output += '| {0} | {1} | {2} | {3} |\n'.format(*row)
+        output += '+---------------+\n'
+        return output
 
 
     def zeros(self):
@@ -41,24 +59,6 @@ class Board(object):
         val = random.choice([2,4])
         loc = random.choice(self.zeros())
         self.board[loc[1], loc[0]] = val
-
-# TODO: handle mutlidigit numbers better
-# TODO: use curses (for better terminal printing)
-    def show(self):
-        """
-            Prints the board to the console.
-        """
-        # +---------------+
-        # | x | x | x | x |
-        # | x | x | x | x |
-        # | x | x | x | x |
-        # | x | x | x | x |
-        # +---------------+
-        output = '+---------------+\n'
-        for row in self.board:
-            output += '| {0} | {1} | {2} | {3} |\n'.format(*row)
-        output += '+---------------+\n'
-        print(output)
 
 
     # TODO: Use numpy to do all rows at once
@@ -207,6 +207,8 @@ class Board(object):
             Returns the equivalent board with the smallest numbers possible. Useful for training an ML algorithm.
         """
         pass
+
+    
 # TODO: create property for board
     # @property
     # def board(self):
