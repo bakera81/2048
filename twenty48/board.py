@@ -4,7 +4,8 @@ import copy
 
 class GameOver(Exception):
     """GAME OVER"""
-    pass
+    def __init__(self):
+        Exception.__init__(self, "GAME OVER")
 
 class Board(object):
 
@@ -143,7 +144,7 @@ class Board(object):
         return np.array_equal(self.board, other.board)
 
 
-    def can_combine_in_direction(self, direction):
+    def can_move_in_direction(self, direction):
         test_board = Board(self)
         if direction == 'down' or direction == 'd':
             test_board.down()
@@ -156,12 +157,14 @@ class Board(object):
         else:
             print("Error: invalid string for direction.")
             raise
-        test_board_mean = np.mean(test_board.board[np.nonzero(test_board.board)])
-        self_mean = np.mean(self.board[np.nonzero(self.board)])
-        if test_board_mean > self_mean:
-            return True
-        else:
-            return False
+
+        return not self.equals(test_board)
+        # test_board_mean = np.mean(test_board.board[np.nonzero(test_board.board)])
+        # self_mean = np.mean(self.board[np.nonzero(self.board)])
+        # if test_board_mean > self_mean:
+        #     return True
+        # else:
+        #     return False
 
     # TODO: Just look at the row/col and compute. No need to create a new board.
     def can_combine(self, x, y, direction):
@@ -208,7 +211,7 @@ class Board(object):
         """
         pass
 
-    
+
 # TODO: create property for board
     # @property
     # def board(self):

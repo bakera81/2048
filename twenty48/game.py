@@ -23,44 +23,43 @@ class Game(object):
         while True:
             print(self.board)
             self.previous_board = Board(self.board)
+            moved = False
             resp = input("Next Command: ")
             if resp == 'q' or resp == 'Q':
-                print(self.sequence)
+                self.show_sequence()
                 break
             elif resp == 's':
                 self.sequence.append({'move': 'down', 'board': Board(self.board)})
-                self.board.down()
+                moved = self.down()
             elif resp == 'd':
                 self.sequence.append({'move': 'right', 'board': Board(self.board)})
-                self.board.right()
+                moved = self.right()
             elif resp == 'w':
                 self.sequence.append({'move': 'up', 'board': Board(self.board)})
-                self.board.up()
+                moved = self.up()
             elif resp == 'a':
                 self.sequence.append({'move': 'left', 'board': Board(self.board)})
-                self.board.left()
+                moved = self.left()
             elif resp == 'seq':
                 self.show_sequence()
             else:
                 print("Unrecognized command '{0}'. 'q' to quit.".format(resp))
 
-            if not self.board.equals(self.previous_board): # Don't add new numbers if no move was made
-                try:
-                    self.board.next()
-                except GameOver:
-                    break
+            print("moved: {}".format(moved))
+            if self.is_over():
+                raise GameOver
+                break
 
-    # Don't add new numbers if no move was made!
+
     def right(self):
         self.sequence.append({'move': 'right', 'board': Board(self.board)})
 
-        if self.board.can_combine_in_direction('right'):
-            combined = 1.0
+        if self.board.can_move_in_direction('right'):
+            self.board.right()
+            self.board.next()
+            combined = True
         else:
-            combined = 0.0
-
-        self.board.right()
-        self.board.next()
+            combined = False
 
         return combined
 
@@ -68,26 +67,24 @@ class Game(object):
     def down(self):
         self.sequence.append({'move': 'down', 'board': Board(self.board)})
 
-        if self.board.can_combine_in_direction('down'):
-            combined = 1.0
+        if self.board.can_move_in_direction('down'):
+            self.board.down()
+            self.board.next()
+            combined = True
         else:
-            combined = 0.0
-
-        self.board.down()
-        self.board.next()
+            combined = False
 
         return combined
 
 
     def left(self):
         self.sequence.append({'move': 'left', 'board': Board(self.board)})
-        if self.board.can_combine_in_direction('left'):
-            combined = 1.0
+        if self.board.can_move_in_direction('left'):
+            self.board.left()
+            self.board.next()
+            combined = True
         else:
-            combined = 0.0
-
-        self.board.left()
-        self.board.next()
+            combined = False
 
         return combined
 
@@ -95,13 +92,12 @@ class Game(object):
     def up(self):
         self.sequence.append({'move': 'up', 'board': Board(self.board)})
 
-        if self.board.can_combine_in_direction('up'):
-            combined = 1.0
+        if self.board.can_move_in_direction('up'):
+            self.board.up()
+            self.board.next()
+            combined = True
         else:
-            combined = 0.0
-
-        self.board.up()
-        self.board.next()
+            combined = False
 
         return combined
 
@@ -113,5 +109,10 @@ class Game(object):
             print(turn['board'])
 
 
-    def is_over():
-        pass
+    def is_over(self):
+        possible_move = [self.board.can_move_in_direction('up'),
+                         self.board.can_move_in_direction('down'),
+                         self.board.can_move_in_direction('left'),
+                         self.board.can_move_in_direction('right')]
+
+        return not any(possible_move)
